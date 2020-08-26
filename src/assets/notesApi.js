@@ -9,11 +9,7 @@ const endOfAPIRequest = async (data) => {
 
 // GET DATA MODEL FROM API
 const createEmptyNote = () => {
-  const maxId = encryptedNotes.data.reduce(
-    (max, n) => (n.id > max ? n.id : max),
-    encryptedNotes.data[0].id
-  )
-  return {id: maxId + 1, title: '', encrypted: {content: ''}}
+  return {id: encryptedNotes.data.length + 1, title: '', encrypted: {content: ''}}
 }
 
 //  CREATE
@@ -38,4 +34,9 @@ const updateNote = async (note) => {
   return endOfAPIRequest(encrypted)
 }
 
-export { getAllNotes, getDecryptedNoteById, createEmptyNote, createNote, updateNote }
+// DELETE
+const deleteNoteById = async (id) => {
+  return endOfAPIRequest()
+}
+
+export { getAllNotes, getDecryptedNoteById, createEmptyNote, createNote, updateNote, deleteNoteById }

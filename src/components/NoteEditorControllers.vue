@@ -5,6 +5,7 @@
       class="editing-controllers">
       <button  type="button" @click="cancelEdition()">Cancel</button>
       <button  type="button" @click="saveNote()">Save</button>
+      <button  type="button" @click="deleteNote()">Delete</button>
     </div>
     <div
       v-else
@@ -26,7 +27,7 @@ export default {
 
   methods: {
     ...mapMutations(['setEditMode']),
-    ...mapActions(['cancelEdition', 'saveNote'])
+    ...mapActions(['cancelEdition', 'saveNote', 'deleteNote'])
   }
 }
 </script>

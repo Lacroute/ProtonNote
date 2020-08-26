@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getAllNotes, getDecryptedNoteById, createEmptyNote, createNote, updateNote } from '@/assets/notesApi'
+import { getAllNotes, getDecryptedNoteById, createEmptyNote, createNote, updateNote, deleteNoteById } from '@/assets/notesApi'
 import clonedeep from 'lodash.clonedeep'
 
 Vue.use(Vuex)
@@ -19,6 +19,10 @@ const store = new Vuex.Store({
   getters: {
     draftNoteId: state => {
       return state.draftNote === null ? null : state.draftNote.id
+    },
+
+    draftNoteIndex: state => {
+      return state.notes.findIndex(n => n.id === state.draftNote.id)
     }
   },
 
@@ -49,7 +53,7 @@ const store = new Vuex.Store({
       commit('setEditMode', true)
     },
 
-    async saveNote ({ commit, state }) {
+    async saveNote ({ commit, state, getters }) {
       let note, create
       if (state.creationMode) {
         note = await createNote(state.draftNote)
@@ -58,7 +62,15 @@ const store = new Vuex.Store({
         note = await updateNote(state.draftNote)
         create = false
       }
-      commit('updateNotes', {create: create, data: note})
+      commit('updateNotes', {create: create, index: getters.draftNoteIndex, data: note})
+      commit('setEditMode', false)
+      commit('setCreationMode', false)
+    },
+
+    async deleteNote ({ commit, getters }) {
+      await deleteNoteById(getters.draftNoteIndex)
+      commit('removeNote', getters.draftNoteIndex)
+      commit('setDraftNote', null)
       commit('setEditMode', false)
       commit('setCreationMode', false)
     }
@@ -93,9 +105,13 @@ const store = new Vuex.Store({
       state.draftNote.encrypted.content = payload
     },
 
-    updateNotes (state, payload) {
-      if (payload.create) state.notes.unshift(payload.data)
-      else state.notes[state.notes.findIndex(n => n.id === payload.data.id)] = payload.data
+    updateNotes (state, { create, index, data }) {
+      if (create) state.notes.unshift(data)
+      else state.notes[index] = data
+    },
+
+    removeNote (state, payload) {
+      state.notes.splice(payload, 1)
     }
   },
 
