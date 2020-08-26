@@ -1,9 +1,13 @@
 import encryptedNotes from '@/assets/encrypted_notes.json'
-import { decrypt } from '@/assets/mockEncryption'
+import { wait, decrypt } from '@/assets/mockEncryption'
 
 const getAllNotes = async () => {
-  const notes = await decrypt(encryptedNotes)
-  return notes.data
+  await wait(500)
+  return encryptedNotes.data
 }
 
-export { getAllNotes }
+const getDecryptedNoteById = async (id) => {
+  return decrypt(encryptedNotes.data.find(n => n.id === id) || null)
+}
+
+export { getAllNotes, getDecryptedNoteById }

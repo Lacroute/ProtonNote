@@ -5,12 +5,12 @@ const wait = (delay) => {
 }
 
 const encrypt = async (data) => {
-  await wait(10)
+  await wait(500)
   return data
 }
 
 const decrypt = async (data) => {
-  await wait(10)
+  await wait(500)
   return data
 }
 
