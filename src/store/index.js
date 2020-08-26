@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getAllNotes, getDecryptedNoteById, createEmptyNote } from '@/assets/notesApi'
+import { getAllNotes, getDecryptedNoteById, createEmptyNote, createNote, updateNote } from '@/assets/notesApi'
+import clonedeep from 'lodash.clonedeep'
 
 Vue.use(Vuex)
 
@@ -32,7 +33,7 @@ const store = new Vuex.Store({
     async getDecryptedNote ({ commit, state }, payload) {
       if (state.editMode) return
       const decrypted = await getDecryptedNoteById(payload)
-      commit('setDraftNote', {...decrypted}) // spread object to remove dependency
+      commit('setDraftNote', clonedeep(decrypted)) // remove dependency because of Array.find
     },
 
     cancelEdition ({ commit }) {
@@ -46,6 +47,20 @@ const store = new Vuex.Store({
       commit('setDraftNote', newNote)
       commit('setCreationMode', true)
       commit('setEditMode', true)
+    },
+
+    async saveNote ({ commit, state }) {
+      let note, create
+      if (state.creationMode) {
+        note = await createNote(state.draftNote)
+        create = true
+      } else {
+        note = await updateNote(state.draftNote)
+        create = false
+      }
+      commit('updateNotes', {create: create, data: note})
+      commit('setEditMode', false)
+      commit('setCreationMode', false)
     }
   },
 
@@ -72,6 +87,15 @@ const store = new Vuex.Store({
 
     updateDraftNoteTitle (state, payload) {
       state.draftNote.title = payload
+    },
+
+    updateDraftNoteContent (state, payload) {
+      state.draftNote.encrypted.content = payload
+    },
+
+    updateNotes (state, payload) {
+      if (payload.create) state.notes.unshift(payload.data)
+      else state.notes[state.notes.findIndex(n => n.id === payload.data.id)] = payload.data
     }
   },
 

@@ -16,7 +16,7 @@
       <textarea
       :readonly="!editMode"
       ref="contentTextEditor"
-      v-model="noteContent"
+      v-model="draftNoteContent"
       rows="8"
       >
     </textarea>
@@ -47,13 +47,22 @@ export default {
   computed: {
     ...mapState(['draftNote', 'editMode', 'creationMode']),
     ...mapGetters(['draftNoteId']),
-    // reactive display ?
+
     draftNoteTitle: {
       get () {
         return this.$store.state.draftNote.title
       },
       set (value) {
         this.$store.commit('updateDraftNoteTitle', value)
+      }
+    },
+
+    draftNoteContent: {
+      get () {
+        return this.$store.state.draftNote.encrypted.content
+      },
+      set (value) {
+        this.$store.commit('updateDraftNoteContent', value)
       }
     }
   },
