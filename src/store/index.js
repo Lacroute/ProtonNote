@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getAllNotes, getDecryptedNoteById, createEmptyNote, createNote, updateNote, deleteNoteById } from '@/assets/notesApi'
-import clonedeep from 'lodash.clonedeep'
+import { getAllNotes, getDecryptedNoteById, getNoteModel, createNote, updateNoteById, deleteNoteById } from '@/assets/notesApi'
 
 Vue.use(Vuex)
 
@@ -37,7 +36,7 @@ const store = new Vuex.Store({
     async getDecryptedNote ({ commit, state }, payload) {
       if (state.editMode) return
       const decrypted = await getDecryptedNoteById(payload)
-      commit('setDraftNote', clonedeep(decrypted)) // remove dependency because of Array.find
+      commit('setDraftNote', decrypted) // remove dependency because of Array.find
     },
 
     cancelEdition ({ commit }) {
@@ -47,7 +46,7 @@ const store = new Vuex.Store({
     },
 
     createDraftNote ({ commit }) {
-      const newNote = createEmptyNote()
+      const newNote = getNoteModel()
       commit('setDraftNote', newNote)
       commit('setCreationMode', true)
       commit('setEditMode', true)
@@ -59,7 +58,7 @@ const store = new Vuex.Store({
         note = await createNote(state.draftNote)
         create = true
       } else {
-        note = await updateNote(state.draftNote)
+        note = await updateNoteById(state.draftNote)
         create = false
       }
       commit('updateNotes', {create: create, index: getters.draftNoteIndex, data: note})
