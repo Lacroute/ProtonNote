@@ -77,20 +77,15 @@ export default {
         // wait for the inputs to be rendered (if first action is new note)
         if (this.creationMode) this.$nextTick(() => this.$refs.titleEditor.focus())
         else this.$refs.contentTextEditor.focus()
-      } else {
-        this.initInputs()
       }
     }
   },
 
   methods: {
     initInputs () {
-      if (this.editMode || this.draftNote !== null) {
+      if (this.draftNote !== null) {
         this.noteTitle = this.draftNote.title
         this.noteContent = this.draftNote.encrypted.content
-      } else {
-        this.noteTitle = null
-        this.noteContent = null
       }
     }
   }
