@@ -8,18 +8,17 @@
     class="display">
     <div class="editor">
       <input
-      type="text"
-      :readonly="!editMode"
-      ref="titleEditor"
-      v-model="draftNoteTitle"
-      class="note-title"/>
+        type="text"
+        :readonly="!editMode"
+        ref="titleEditor"
+        v-model="draftNoteTitle"
+        class="note-title"/>
       <textarea
-      :readonly="!editMode"
-      ref="contentTextEditor"
-      v-model="draftNoteContent"
-      rows="8"
-      >
-    </textarea>
+        :readonly="!editMode"
+        ref="contentTextEditor"
+        v-model="draftNoteContent"
+        rows="8"
+        ></textarea>
     <note-editor-controllers />
   </div>
 </div>
