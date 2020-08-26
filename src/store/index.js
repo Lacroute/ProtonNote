@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import loadingModule from '@/store/modules/loading'
 import { getAllNotes, getDecryptedNoteById, getNoteModel, createNote, updateNoteById, deleteNoteById } from '@/assets/notesApi'
 
 Vue.use(Vuex)
@@ -7,8 +8,11 @@ Vue.use(Vuex)
 const debug = process.env.NODE_ENV !== 'production'
 
 const store = new Vuex.Store({
+  modules: {
+    loading: loadingModule
+  },
+
   state: {
-    loading: true,
     notes: [],
     editMode: false,
     creationMode: false,
@@ -27,9 +31,9 @@ const store = new Vuex.Store({
 
   actions: {
     async getAllNotes ({ commit }) {
-      commit('loading', true)
+      commit('loading/setLoadingNotes', true)
       const notes = await getAllNotes()
-      commit('loading', false)
+      commit('loading/setLoadingNotes', false)
       commit('populate', notes)
     },
 
@@ -53,6 +57,7 @@ const store = new Vuex.Store({
     },
 
     async saveNote ({ commit, state, getters }) {
+      commit('loading/setLoadingCreate', true)
       let note, create
       if (state.creationMode) {
         note = await createNote(state.draftNote)
@@ -65,22 +70,21 @@ const store = new Vuex.Store({
       commit('updateNotes', {create: create, index: getters.draftNoteIndex, data: note})
       commit('setEditMode', false)
       commit('setCreationMode', false)
+      commit('loading/setLoadingCreate', false)
     },
 
     async deleteNote ({ commit, getters }) {
+      commit('loading/setLoadingDelete', true)
       await deleteNoteById(getters.draftNoteIndex)
       commit('removeNote', getters.draftNoteIndex)
       commit('setDraftNote', null)
       commit('setEditMode', false)
       commit('setCreationMode', false)
+      commit('loading/setLoadingDelete', false)
     }
   },
 
   mutations: {
-    loading (state, payload) {
-      state.loading = payload
-    },
-
     populate (state, payload) {
       state.notes = payload
     },

@@ -3,9 +3,9 @@
     <div
       v-if="editMode"
       class="editing-controllers">
-      <button  type="button" @click="cancelEdition()">Cancel</button>
-      <button  type="button" @click="saveNote()">Save</button>
-      <button  type="button" @click="deleteNote()">Delete</button>
+      <button type="button" @click="cancelEdition()" :disabled="disabled">Cancel</button>
+      <button type="button" @click="saveNote()" :disabled="disabled">Save</button>
+      <button type="button" @click="deleteNote()" :disabled="disabled">Delete</button>
     </div>
     <div
       v-else
@@ -22,7 +22,12 @@ export default {
   name: 'NoteEditorControllers',
 
   computed: {
-    ...mapState(['editMode'])
+    ...mapState(['editMode']),
+    ...mapState('loading', ['loadingCreate', 'loadingDelete']),
+
+    disabled () {
+      return this.loadingCreate || this.loadingDelete
+    }
   },
 
   methods: {

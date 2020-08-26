@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="note-list">
-    <div class="loading" v-if="loading">
+    <div class="loading" v-if="loadingNotes">
       <p>loading...</p>
     </div>
     <note-preview
@@ -25,7 +25,8 @@ export default {
   },
 
   computed: {
-    ...mapState(['loading', 'notes'])
+    ...mapState(['notes']),
+    ...mapState('loading', ['loadingNotes'])
   },
 
   created () {
