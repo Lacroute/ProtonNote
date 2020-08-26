@@ -10,4 +10,12 @@ const getDecryptedNoteById = async (id) => {
   return decrypt(encryptedNotes.data.find(n => n.id === id) || null)
 }
 
-export { getAllNotes, getDecryptedNoteById }
+const createEmptyNote = () => {
+  const maxId = encryptedNotes.data.reduce(
+    (max, n) => (n.id > max ? n.id : max),
+    encryptedNotes.data[0].id
+  )
+  return {id: maxId + 1, title: '', encrypted: {content: ''}}
+}
+
+export { getAllNotes, getDecryptedNoteById, createEmptyNote }

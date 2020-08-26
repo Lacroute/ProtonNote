@@ -25,7 +25,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['notes', 'loading'])
+    ...mapState(['loading', 'notes'])
   },
 
   created () {

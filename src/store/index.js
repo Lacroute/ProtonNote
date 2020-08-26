@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getAllNotes, getDecryptedNoteById } from '@/assets/notesApi'
+import { getAllNotes, getDecryptedNoteById, createEmptyNote } from '@/assets/notesApi'
 
 Vue.use(Vuex)
 
@@ -10,13 +10,14 @@ const store = new Vuex.Store({
   state: {
     loading: true,
     notes: [],
-    decryptedNote: null,
-    editMode: false
+    editMode: false,
+    creationMode: false,
+    draftNote: null
   },
 
   getters: {
-    decryptedNoteId: state => {
-      return state.decryptedNote === null ? null : state.decryptedNote.id
+    draftNoteId: state => {
+      return state.draftNote === null ? null : state.draftNote.id
     }
   },
 
@@ -28,9 +29,23 @@ const store = new Vuex.Store({
       commit('populate', notes)
     },
 
-    async getDecryptedNote ({ commit }, payload) {
+    async getDecryptedNote ({ commit, state }, payload) {
+      if (state.editMode) return
       const decrypted = await getDecryptedNoteById(payload)
-      commit('decryptNote', decrypted)
+      commit('setDraftNote', {...decrypted}) // spread object to remove dependency
+    },
+
+    cancelEdition ({ commit }) {
+      commit('setDraftNote', null)
+      commit('setCreationMode', false)
+      commit('setEditMode', false)
+    },
+
+    createDraftNote ({ commit }) {
+      const newNote = createEmptyNote()
+      commit('setDraftNote', newNote)
+      commit('setCreationMode', true)
+      commit('setEditMode', true)
     }
   },
 
@@ -43,12 +58,20 @@ const store = new Vuex.Store({
       state.notes = payload
     },
 
-    decryptNote (state, payload) {
-      state.decryptedNote = payload
+    setDraftNote (state, payload) {
+      state.draftNote = payload
+    },
+
+    setCreationMode (state, payload) {
+      state.creationMode = payload
     },
 
     setEditMode (state, payload) {
       state.editMode = payload
+    },
+
+    updateDraftNoteTitle (state, payload) {
+      state.draftNote.title = payload
     }
   },
 

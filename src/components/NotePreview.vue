@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'NotePreview',
@@ -24,11 +24,11 @@ export default {
   },
 
   computed: {
-    ...mapState(['editMode']),
-    ...mapGetters(['decryptedNoteId']),
+    ...mapState(['editMode', 'draftNote']),
+    ...mapGetters(['draftNoteId']),
 
     isSelected () {
-      return this.decryptedNoteId === this.id
+      return this.draftNoteId === this.id
     }
   },
 

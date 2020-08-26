@@ -3,7 +3,7 @@
     <div
       v-if="editMode"
       class="editing-controllers">
-      <button  type="button" @click="setEditMode(false)">Cancel</button>
+      <button  type="button" @click="cancelEdition()">Cancel</button>
     </div>
     <div
       v-else
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'NoteEditorControllers',
@@ -24,13 +24,14 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['setEditMode'])
+    ...mapMutations(['setEditMode']),
+    ...mapActions(['cancelEdition'])
   }
 }
 </script>
 
 <style lang="css">
-.note-editor-controllers button{
-  cursor: pointer;
+.note-editor-controllers{
+  border-top: solid 2px black;
 }
 </style>

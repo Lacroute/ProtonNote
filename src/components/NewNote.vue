@@ -1,17 +1,21 @@
 <template lang="html">
   <div class="new-note">
-    <button type="button" :disabled="editMode">+ New note</button>
+    <button type="button" @click="createDraftNote" :disabled="editMode">+ New note</button>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'NewNote',
 
   computed: {
     ...mapState(['editMode'])
+  },
+
+  methods: {
+    ...mapActions(['createDraftNote'])
   }
 }
 </script>

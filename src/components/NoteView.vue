@@ -1,24 +1,29 @@
 <template lang="html">
   <div class="note-view">
-    <p v-if="decryptedNote === null || decryptedNote === undefined">
+    <p v-if="draftNote === null">
       Welcome to ProtonNote
     </p>
     <div
-      v-else
-      class="display">
-      <h1>{{ decryptedNote.title }}</h1>
-      <div class="editor">
-        <textarea
-          :readonly="!editMode"
-          ref="textareaEditor"
-          rows="8"
-          v-model="noteContent"
-          >
-        </textarea>
-        <note-editor-controllers />
-      </div>
-    </div>
+    v-else
+    class="display">
+    <div class="editor">
+      <input
+      type="text"
+      :readonly="!editMode"
+      ref="titleEditor"
+      v-model="draftNoteTitle"
+      class="note-title"/>
+      <textarea
+      :readonly="!editMode"
+      ref="contentTextEditor"
+      v-model="noteContent"
+      rows="8"
+      >
+    </textarea>
+    <note-editor-controllers />
   </div>
+</div>
+</div>
 
 </template>
 
@@ -40,18 +45,44 @@ export default {
   },
 
   computed: {
-    ...mapState(['decryptedNote', 'editMode']),
-    ...mapGetters(['decryptedNoteId'])
+    ...mapState(['draftNote', 'editMode', 'creationMode']),
+    ...mapGetters(['draftNoteId']),
+    // reactive display ?
+    draftNoteTitle: {
+      get () {
+        return this.$store.state.draftNote.title
+      },
+      set (value) {
+        this.$store.commit('updateDraftNoteTitle', value)
+      }
+    }
   },
 
   watch: {
-    decryptedNoteId: function (value) {
-      this.noteContent = this.decryptedNote.encrypted.content
+    draftNoteId: function (value) {
+      this.initInputs()
     },
 
     editMode: function (value) {
-      if (value) this.$refs.textareaEditor.focus()
-      else this.noteContent = this.decryptedNote.encrypted.content
+      if (value) {
+        // wait for the inputs to be rendered (if first action is new note)
+        if (this.creationMode) this.$nextTick(() => this.$refs.titleEditor.focus())
+        else this.$refs.contentTextEditor.focus()
+      } else {
+        this.initInputs()
+      }
+    }
+  },
+
+  methods: {
+    initInputs () {
+      if (this.editMode || this.draftNote !== null) {
+        this.noteTitle = this.draftNote.title
+        this.noteContent = this.draftNote.encrypted.content
+      } else {
+        this.noteTitle = null
+        this.noteContent = null
+      }
     }
   }
 }
@@ -65,17 +96,21 @@ export default {
   flex-direction: column;
 }
 
-.note-view h1{
+.note-view .note-title{
+  border: none;
   border-bottom: 2px solid black;
   padding: 10px 20px;
   background: white;
-}
-.note-view .editor{
+  font-weight: bold;
+  font-size: 1.2em;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .note-view textarea{
   box-sizing: border-box;
   width: 100%;
-  background: white
+  background: white;
+  border: none;
 }
 </style>
