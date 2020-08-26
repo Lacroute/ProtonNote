@@ -1,0 +1,7 @@
+{
+  "data": [
+    {"title": "My first note", "encrypted": {"content": "coucou"}},
+    {"title": "My second note", "encrypted": {"content": "les"}},
+    {"title": "My third note", "encrypted": {"content": "copains"}}
+  ]
+}
