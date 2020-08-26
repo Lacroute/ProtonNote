@@ -10,11 +10,12 @@ const store = new Vuex.Store({
   state: {
     loading: true,
     notes: [],
-    decryptedNote: null
+    decryptedNote: null,
+    editMode: false
   },
 
   getters: {
-    selectedNoteId: state => {
+    decryptedNoteId: state => {
       return state.decryptedNote === null ? null : state.decryptedNote.id
     }
   },
@@ -42,8 +43,12 @@ const store = new Vuex.Store({
       state.notes = payload
     },
 
-    decryptNote (state, note) {
-      state.decryptedNote = note
+    decryptNote (state, payload) {
+      state.decryptedNote = payload
+    },
+
+    setEditMode (state, payload) {
+      state.editMode = payload
     }
   },
 

@@ -8,7 +8,14 @@
       class="display">
       <h1>{{ decryptedNote.title }}</h1>
       <div class="editor">
-        {{ decryptedNote.encrypted.content}}
+        <textarea
+          :readonly="!editMode"
+          ref="textareaEditor"
+          rows="8"
+          v-model="noteContent"
+          >
+        </textarea>
+        <note-editor-controllers />
       </div>
     </div>
   </div>
@@ -16,13 +23,36 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
+import NoteEditorControllers from '@/components/NoteEditorControllers'
 
 export default {
   name: 'NoteView',
 
+  components: {
+    NoteEditorControllers
+  },
+
+  data () {
+    return {
+      noteContent: null
+    }
+  },
+
   computed: {
-    ...mapState(['decryptedNote'])
+    ...mapState(['decryptedNote', 'editMode']),
+    ...mapGetters(['decryptedNoteId'])
+  },
+
+  watch: {
+    decryptedNoteId: function (value) {
+      this.noteContent = this.decryptedNote.encrypted.content
+    },
+
+    editMode: function (value) {
+      if (value) this.$refs.textareaEditor.focus()
+      else this.noteContent = this.decryptedNote.encrypted.content
+    }
   }
 }
 </script>
@@ -30,20 +60,22 @@ export default {
 <style lang="css">
 
 .note-view{
-  background: lightgray;
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
 .note-view h1{
-  border: 2px solid black;
-  border-bottom: none;
+  border-bottom: 2px solid black;
   padding: 10px 20px;
   background: white;
 }
 .note-view .editor{
-  border: 2px solid black;
-  background: white;
+}
+
+.note-view textarea{
+  box-sizing: border-box;
+  width: 100%;
+  background: white
 }
 </style>

@@ -1,13 +1,13 @@
 <template lang="html">
   <div
-    :class="['note-preview', {selected: isSelected}]"
-    @click="getDecryptedNote(id)">
+    :class="['note-preview', {selected: isSelected}, {disabled: editMode}]"
+    @click="selectNote(id)">
     <h2>{{ title }}</h2>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'NotePreview',
@@ -24,33 +24,45 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['selectedNoteId']),
+    ...mapState(['editMode']),
+    ...mapGetters(['decryptedNoteId']),
 
     isSelected () {
-      return this.selectedNoteId === this.id
+      return this.decryptedNoteId === this.id
     }
   },
 
   methods: {
-    ...mapActions(['getDecryptedNote'])
+    ...mapActions(['getDecryptedNote']),
+
+    selectNote (id) {
+      if (!this.editMode) {
+        this.getDecryptedNote(id)
+      }
+    }
   }
 }
 </script>
 
 <style lang="css">
 .note-preview{
-  border: solid 2px black;
   padding: 10px 20px;
+  border-right: 2px solid black;
+  border-bottom: 2px solid black;
 }
-.note-preview + .note-preview{
-  border-top: none;
+.note-preview, .note-preview.disabled:hover{
+  background: white;
+  color: black;
 }
-.note-preview:hover, .note-preview.selected{
+.note-preview:hover, .note-preview.selected, .note-preview.selected.disabled{
   background: lightblue;
   color: white;
 }
 .note-preview:hover{
   cursor: pointer;
+}
+.note-preview.disabled:hover{
+  cursor: auto;
 }
 
 </style>
