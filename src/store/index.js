@@ -56,6 +56,7 @@ const store = new Vuex.Store({
       let note, create
       if (state.creationMode) {
         note = await createNote(state.draftNote)
+        commit('setDraftNote', note) // to get back the id from the API
         create = true
       } else {
         note = await updateNoteById(state.draftNote)
