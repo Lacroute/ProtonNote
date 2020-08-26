@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="note-view">
-    <p v-if="draftNote === null">
+    <p v-if="draftNote === null" class="welcome">
       Welcome to ProtonNote
     </p>
     <div
@@ -97,6 +97,8 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+  height: 100%;
 }
 
 .note-view .note-title{
@@ -115,5 +117,12 @@ export default {
   width: 100%;
   background: white;
   border: none;
+}
+
+.note-view .welcome{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

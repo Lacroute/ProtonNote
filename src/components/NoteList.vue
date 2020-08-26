@@ -4,12 +4,17 @@
       <p>loading...</p>
     </div>
     <note-preview
-      v-else
+      v-else-if="notes.length > 0"
       v-for="note in notes"
       :key="note.id"
       :id="note.id"
       :title="note.title"
       />
+    <div
+      v-else
+      class="nothing-to-do">
+      <p>To create a note click on the New note button</p>
+    </div>
   </div>
 </template>
 
@@ -38,5 +43,14 @@ export default {
 <style lang="css">
   .note-list{
     width: 100%;
+    position: relative;
+    height: 100%;
+  }
+
+  .note-list .nothing-to-do{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 </style>
